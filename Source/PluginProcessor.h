@@ -77,6 +77,7 @@ public:
         createParameterLayout();
     
     juce::AudioProcessorValueTreeState apvts{*this, nullptr, "Parameters", createParameterLayout()};
+   
 
 private:
     using Filter = juce::dsp::IIR::Filter<float>;
@@ -93,6 +94,10 @@ private:
         Peak,
         HighCut
     };
+    
+    void updatePeakFilter(const ChainSettings &chainSettings);
+    using Coefficients = Filter::CoefficientsPtr;
+    static void updateCoefficents(Coefficients& old, const Coefficients& replacements);
     //==============================================================================
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (SimpleEQAudioProcessor)
 };
