@@ -7,7 +7,7 @@
 		<key>JhanEQ - AU.xcscheme_^#shared#^_</key>
 		<dict>
 			<key>orderHint</key>
-			<integer>1</integer>
+			<integer>2</integer>
 		</dict>
 		<key>JhanEQ - All.xcscheme_^#shared#^_</key>
 		<dict>
@@ -17,12 +17,22 @@
 		<key>JhanEQ - Shared Code.xcscheme_^#shared#^_</key>
 		<dict>
 			<key>orderHint</key>
-			<integer>2</integer>
+			<integer>4</integer>
+		</dict>
+		<key>JhanEQ - Standalone Plugin.xcscheme_^#shared#^_</key>
+		<dict>
+			<key>orderHint</key>
+			<integer>3</integer>
+		</dict>
+		<key>JhanEQ - VST3.xcscheme_^#shared#^_</key>
+		<dict>
+			<key>orderHint</key>
+			<integer>1</integer>
 		</dict>
 	</dict>
 	<key>SuppressBuildableAutocreation</key>
 	<dict>
-		<key>90FA87519D6E24980500DF3E</key>
+		<key>E27E7AC151403798808BDE6F</key>
 		<dict>
 			<key>primary</key>
 			<true/>

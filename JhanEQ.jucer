@@ -3,7 +3,7 @@
 <JUCERPROJECT id="JpycfT" name="JhanEQ" projectType="audioplug" useAppConfig="0"
               addUsingNamespaceToJuceHeader="0" displaySplashScreen="1" jucerFormatVersion="1"
               companyName="HanStudio" companyWebsite="www.jhansonic.com" companyEmail="hanstudio@jhansonic.com"
-              pluginFormats="buildAU" cppLanguageStandard="17">
+              pluginFormats="buildAU,buildStandalone,buildVST3" cppLanguageStandard="17">
   <MAINGROUP id="AYtTES" name="JhanEQ">
     <GROUP id="{3CD66072-7B5C-7CB6-8459-44D5AA620964}" name="Source">
       <FILE id="rscyXv" name="PluginProcessor.cpp" compile="1" resource="0"
@@ -35,6 +35,7 @@
         <MODULEPATH id="juce_graphics" path="../../../../../../Volumes/MacHdd/Dropbox/DATA/JUCE/modules"/>
         <MODULEPATH id="juce_gui_basics" path="../../../../../../Volumes/MacHdd/Dropbox/DATA/JUCE/modules"/>
         <MODULEPATH id="juce_gui_extra" path="../../../../../../Volumes/MacHdd/Dropbox/DATA/JUCE/modules"/>
+        <MODULEPATH id="juce_dsp" path="../../../../../Volumes/MacHdd/Dropbox/DATA/JUCE/modules"/>
       </MODULEPATHS>
     </XCODE_MAC>
   </EXPORTFORMATS>
@@ -48,6 +49,7 @@
     <MODULE id="juce_audio_utils" showAllCode="1" useLocalCopy="0" useGlobalPath="1"/>
     <MODULE id="juce_core" showAllCode="1" useLocalCopy="0" useGlobalPath="1"/>
     <MODULE id="juce_data_structures" showAllCode="1" useLocalCopy="0" useGlobalPath="1"/>
+    <MODULE id="juce_dsp" showAllCode="1" useLocalCopy="0" useGlobalPath="1"/>
     <MODULE id="juce_events" showAllCode="1" useLocalCopy="0" useGlobalPath="1"/>
     <MODULE id="juce_graphics" showAllCode="1" useLocalCopy="0" useGlobalPath="1"/>
     <MODULE id="juce_gui_basics" showAllCode="1" useLocalCopy="0" useGlobalPath="1"/>
