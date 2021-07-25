@@ -108,120 +108,18 @@ void JhanEQAudioProcessor::prepareToPlay (double sampleRate, int samplesPerBlock
     
     auto chainSettings = getChainSettings(apvts);
     
-    auto peakCoefficients = juce::dsp::IIR::Coefficients<float>::makePeakFilter(sampleRate,
-                                                                                chainSettings.peakFreq,
-                                                                                chainSettings.peakQuality,
-                                                                                juce::Decibels::decibelsToGain(chainSettings.peakGainDecibels));
+    updatePeakFilter(chainSettings);
     
-    *leftChain.get<ChainPositions::Peak>().coefficients = *peakCoefficients;
-    *rightChain.get<ChainPositions::Peak>().coefficients = *peakCoefficients;
-    
-    auto cutCoefficients =  juce::dsp::FilterDesign<float>::designIIRHighpassHighOrderButterworthMethod(chainSettings.highPassFreq,
+    auto passCoefficients =  juce::dsp::FilterDesign<float>::designIIRHighpassHighOrderButterworthMethod(chainSettings.highPassFreq,
                                                                                                         sampleRate,
                                                                                                         2 * (chainSettings.highPassSlope + 1));
     
     auto& leftHighPass = leftChain.get<ChainPositions::HighPass>();
-    
-    leftHighPass.setBypassed<0>(true);
-    leftHighPass.setBypassed<1>(true);
-    leftHighPass.setBypassed<2>(true);
-    leftHighPass.setBypassed<3>(true);
-    
-    switch(chainSettings.lowPassSlope)
-    {
-        case Slope_12:
-        {
-            leftHighPass.get<0>().coefficients = cutCoefficients[0];
-            leftHighPass.setBypassed<0>(false);
-            break;
-        }
-            
-        case Slope_24:
-        {
-            leftHighPass.get<0>().coefficients = cutCoefficients[0];
-            leftHighPass.setBypassed<0>(false);
-            leftHighPass.get<1>().coefficients = cutCoefficients[1];
-            leftHighPass.setBypassed<1>(false);
-            break;
-        }
-            
-        case Slope_36:
-        {
-            leftHighPass.get<0>().coefficients = cutCoefficients[0];
-            leftHighPass.setBypassed<0>(false);
-            leftHighPass.get<1>().coefficients = cutCoefficients[1];
-            leftHighPass.setBypassed<1>(false);
-            leftHighPass.get<2>().coefficients = cutCoefficients[2];
-            leftHighPass.setBypassed<2>(false);
-            break;
-        }
-        
-        case Slope_48:
-        {
-            leftHighPass.get<0>().coefficients = cutCoefficients[0];
-            leftHighPass.setBypassed<0>(false);
-            leftHighPass.get<1>().coefficients = cutCoefficients[1];
-            leftHighPass.setBypassed<1>(false);
-            leftHighPass.get<2>().coefficients = cutCoefficients[2];
-            leftHighPass.setBypassed<2>(false);
-            leftHighPass.get<3>().coefficients = cutCoefficients[3];
-            leftHighPass.setBypassed<3>(false);
-            break;
-        }
-    }
-    
+    updatePassFilter(leftHighPass, passCoefficients, chainSettings.highPassSlope);
+ 
     auto& rightHighPass = rightChain.get<ChainPositions::HighPass>();
-    
-    rightHighPass.setBypassed<0>(true);
-    rightHighPass.setBypassed<1>(true);
-    rightHighPass.setBypassed<2>(true);
-    rightHighPass.setBypassed<3>(true);
-    
-    switch(chainSettings.lowPassSlope)
-    {
-        case Slope_12:
-        {
-            rightHighPass.get<0>().coefficients = cutCoefficients[0];
-            rightHighPass.setBypassed<0>(false);
-            break;
-        }
-            
-        case Slope_24:
-        {
-            rightHighPass.get<0>().coefficients = cutCoefficients[0];
-            rightHighPass.setBypassed<0>(false);
-            rightHighPass.get<1>().coefficients = cutCoefficients[1];
-            rightHighPass.setBypassed<1>(false);
-            break;
-        }
-            
-        case Slope_36:
-        {
-            rightHighPass.get<0>().coefficients = cutCoefficients[0];
-            rightHighPass.setBypassed<0>(false);
-            rightHighPass.get<1>().coefficients = cutCoefficients[1];
-            rightHighPass.setBypassed<1>(false);
-            rightHighPass.get<2>().coefficients = cutCoefficients[2];
-            rightHighPass.setBypassed<2>(false);
-            break;
-        }
-        
-        case Slope_48:
-        {
-            rightHighPass.get<0>().coefficients = cutCoefficients[0];
-            rightHighPass.setBypassed<0>(false);
-            rightHighPass.get<1>().coefficients = cutCoefficients[1];
-            rightHighPass.setBypassed<1>(false);
-            rightHighPass.get<2>().coefficients = cutCoefficients[2];
-            rightHighPass.setBypassed<2>(false);
-            rightHighPass.get<3>().coefficients = cutCoefficients[3];
-            rightHighPass.setBypassed<3>(false);
-            break;
-        }
-    }
-    
-    
-    
+    updatePassFilter(rightHighPass, passCoefficients, chainSettings.highPassSlope);
+
     
 }
 
@@ -274,120 +172,19 @@ void JhanEQAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer, juce:
     
     auto chainSettings = getChainSettings(apvts);
     
-    auto peakCoefficients = juce::dsp::IIR::Coefficients<float>::makePeakFilter(getSampleRate(),
-                                                                                chainSettings.peakFreq,
-                                                                                chainSettings.peakQuality,
-                                                                                juce::Decibels::decibelsToGain(chainSettings.peakGainDecibels));
+    updatePeakFilter(chainSettings);
     
-    *leftChain.get<ChainPositions::Peak>().coefficients = *peakCoefficients;
-    *rightChain.get<ChainPositions::Peak>().coefficients = *peakCoefficients;
     
-    auto cutCoefficients =  juce::dsp::FilterDesign<float>::designIIRHighpassHighOrderButterworthMethod(chainSettings.highPassFreq,
+    auto passCoefficients =  juce::dsp::FilterDesign<float>::designIIRHighpassHighOrderButterworthMethod(chainSettings.highPassFreq,
                                                                                                         getSampleRate(),
                                                                                                         2 * (chainSettings.highPassSlope + 1));
     
     auto& leftHighPass = leftChain.get<ChainPositions::HighPass>();
-    
-    leftHighPass.setBypassed<0>(true);
-    leftHighPass.setBypassed<1>(true);
-    leftHighPass.setBypassed<2>(true);
-    leftHighPass.setBypassed<3>(true);
-    
-    switch(chainSettings.lowPassSlope)
-    {
-        case Slope_12:
-        {
-            leftHighPass.get<0>().coefficients = cutCoefficients[0];
-            leftHighPass.setBypassed<0>(false);
-            break;
-        }
-            
-        case Slope_24:
-        {
-            leftHighPass.get<0>().coefficients = cutCoefficients[0];
-            leftHighPass.setBypassed<0>(false);
-            leftHighPass.get<1>().coefficients = cutCoefficients[1];
-            leftHighPass.setBypassed<1>(false);
-            break;
-        }
-            
-        case Slope_36:
-        {
-            leftHighPass.get<0>().coefficients = cutCoefficients[0];
-            leftHighPass.setBypassed<0>(false);
-            leftHighPass.get<1>().coefficients = cutCoefficients[1];
-            leftHighPass.setBypassed<1>(false);
-            leftHighPass.get<2>().coefficients = cutCoefficients[2];
-            leftHighPass.setBypassed<2>(false);
-            break;
-        }
-        
-        case Slope_48:
-        {
-            leftHighPass.get<0>().coefficients = cutCoefficients[0];
-            leftHighPass.setBypassed<0>(false);
-            leftHighPass.get<1>().coefficients = cutCoefficients[1];
-            leftHighPass.setBypassed<1>(false);
-            leftHighPass.get<2>().coefficients = cutCoefficients[2];
-            leftHighPass.setBypassed<2>(false);
-            leftHighPass.get<3>().coefficients = cutCoefficients[3];
-            leftHighPass.setBypassed<3>(false);
-            break;
-        }
-    }
+    updatePassFilter(leftHighPass, passCoefficients, chainSettings.highPassSlope);
     
     auto& rightHighPass = rightChain.get<ChainPositions::HighPass>();
-    
-    rightHighPass.setBypassed<0>(true);
-    rightHighPass.setBypassed<1>(true);
-    rightHighPass.setBypassed<2>(true);
-    rightHighPass.setBypassed<3>(true);
-    
-    switch(chainSettings.lowPassSlope)
-    {
-        case Slope_12:
-        {
-            rightHighPass.get<0>().coefficients = cutCoefficients[0];
-            rightHighPass.setBypassed<0>(false);
-            break;
-        }
-            
-        case Slope_24:
-        {
-            rightHighPass.get<0>().coefficients = cutCoefficients[0];
-            rightHighPass.setBypassed<0>(false);
-            rightHighPass.get<1>().coefficients = cutCoefficients[1];
-            rightHighPass.setBypassed<1>(false);
-            break;
-        }
-            
-        case Slope_36:
-        {
-            rightHighPass.get<0>().coefficients = cutCoefficients[0];
-            rightHighPass.setBypassed<0>(false);
-            rightHighPass.get<1>().coefficients = cutCoefficients[1];
-            rightHighPass.setBypassed<1>(false);
-            rightHighPass.get<2>().coefficients = cutCoefficients[2];
-            rightHighPass.setBypassed<2>(false);
-            break;
-        }
-        
-        case Slope_48:
-        {
-            rightHighPass.get<0>().coefficients = cutCoefficients[0];
-            rightHighPass.setBypassed<0>(false);
-            rightHighPass.get<1>().coefficients = cutCoefficients[1];
-            rightHighPass.setBypassed<1>(false);
-            rightHighPass.get<2>().coefficients = cutCoefficients[2];
-            rightHighPass.setBypassed<2>(false);
-            rightHighPass.get<3>().coefficients = cutCoefficients[3];
-            rightHighPass.setBypassed<3>(false);
-            break;
-        }
-    }
-    
-    
-    
+    updatePassFilter(rightHighPass, passCoefficients, chainSettings.highPassSlope);
+
     
     
     juce::dsp::AudioBlock<float> block(buffer);
@@ -447,6 +244,29 @@ ChainSettings getChainSettings(juce::AudioProcessorValueTreeState& apvts)
          
     return settings;
 }
+
+void JhanEQAudioProcessor::updatePeakFilter(const ChainSettings &chainSettings)
+{
+    auto peakCoefficients = juce::dsp::IIR::Coefficients<float>::makePeakFilter(getSampleRate(),
+                                                                                   chainSettings.peakFreq,
+                                                                                   chainSettings.peakQuality,
+                                                                                   juce::Decibels::decibelsToGain(chainSettings.peakGainDecibels));
+       
+    
+    updateCoefficients(leftChain.get<ChainPositions::Peak>().coefficients, peakCoefficients);
+    updateCoefficients(rightChain.get<ChainPositions::Peak>().coefficients, peakCoefficients);
+//       *leftChain.get<ChainPositions::Peak>().coefficients = *peakCoefficients;
+//       *rightChain.get<ChainPositions::Peak>().coefficients = *peakCoefficients;
+
+    
+    
+}
+
+void JhanEQAudioProcessor::updateCoefficients(Coefficients &old, const Coefficients &replacements)
+{
+    *old = *replacements;
+}
+
 
 juce::AudioProcessorValueTreeState::ParameterLayout JhanEQAudioProcessor::createrParemterLayout()
 {
