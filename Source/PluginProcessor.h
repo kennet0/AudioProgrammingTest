@@ -136,6 +136,11 @@ private:
         }
     }
     
+    void updateHighPassFilters(const ChainSettings& chainSettings);
+    void updateLowPassFilters(const ChainSettings& chainSettings);
+    
+    void updateFilters();
+    
     
     
     //==============================================================================

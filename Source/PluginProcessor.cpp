@@ -106,21 +106,7 @@ void JhanEQAudioProcessor::prepareToPlay (double sampleRate, int samplesPerBlock
     leftChain.prepare(spec);
     rightChain.prepare(spec);
     
-    auto chainSettings = getChainSettings(apvts);
-    
-    updatePeakFilter(chainSettings);
-    
-    auto passCoefficients =  juce::dsp::FilterDesign<float>::designIIRHighpassHighOrderButterworthMethod(chainSettings.highPassFreq,
-                                                                                                        sampleRate,
-                                                                                                        2 * (chainSettings.highPassSlope + 1));
-    
-    auto& leftHighPass = leftChain.get<ChainPositions::HighPass>();
-    updatePassFilter(leftHighPass, passCoefficients, chainSettings.highPassSlope);
- 
-    auto& rightHighPass = rightChain.get<ChainPositions::HighPass>();
-    updatePassFilter(rightHighPass, passCoefficients, chainSettings.highPassSlope);
-
-    
+    updateFilters();
 }
 
 void JhanEQAudioProcessor::releaseResources()
@@ -170,22 +156,7 @@ void JhanEQAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer, juce:
     for (auto i = totalNumInputChannels; i < totalNumOutputChannels; ++i)
         buffer.clear (i, 0, buffer.getNumSamples());
     
-    auto chainSettings = getChainSettings(apvts);
-    
-    updatePeakFilter(chainSettings);
-    
-    
-    auto passCoefficients =  juce::dsp::FilterDesign<float>::designIIRHighpassHighOrderButterworthMethod(chainSettings.highPassFreq,
-                                                                                                        getSampleRate(),
-                                                                                                        2 * (chainSettings.highPassSlope + 1));
-    
-    auto& leftHighPass = leftChain.get<ChainPositions::HighPass>();
-    updatePassFilter(leftHighPass, passCoefficients, chainSettings.highPassSlope);
-    
-    auto& rightHighPass = rightChain.get<ChainPositions::HighPass>();
-    updatePassFilter(rightHighPass, passCoefficients, chainSettings.highPassSlope);
-
-    
+    updateFilters();
     
     juce::dsp::AudioBlock<float> block(buffer);
     
@@ -198,9 +169,6 @@ void JhanEQAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer, juce:
     leftChain.process(leftContext);
     rightChain.process(rightContext);
     
-    
-    
-
     
 }
 
@@ -255,16 +223,47 @@ void JhanEQAudioProcessor::updatePeakFilter(const ChainSettings &chainSettings)
     
     updateCoefficients(leftChain.get<ChainPositions::Peak>().coefficients, peakCoefficients);
     updateCoefficients(rightChain.get<ChainPositions::Peak>().coefficients, peakCoefficients);
-//       *leftChain.get<ChainPositions::Peak>().coefficients = *peakCoefficients;
-//       *rightChain.get<ChainPositions::Peak>().coefficients = *peakCoefficients;
 
-    
-    
 }
 
 void JhanEQAudioProcessor::updateCoefficients(Coefficients &old, const Coefficients &replacements)
 {
     *old = *replacements;
+}
+
+void JhanEQAudioProcessor::updateHighPassFilters(const ChainSettings &chainSettings)
+{
+    auto highPassCoefficients =  juce::dsp::FilterDesign<float>::designIIRHighpassHighOrderButterworthMethod(chainSettings.highPassFreq,
+                                                                                                           getSampleRate(),
+                                                                                                           2 * (chainSettings.highPassSlope + 1));
+       
+       auto& leftHighPass = leftChain.get<ChainPositions::HighPass>();
+       auto& rightHighPass = rightChain.get<ChainPositions::HighPass>();
+    
+       updatePassFilter(rightHighPass, highPassCoefficients, chainSettings.highPassSlope);
+       updatePassFilter(leftHighPass, highPassCoefficients, chainSettings.highPassSlope);
+}
+
+void JhanEQAudioProcessor::updateLowPassFilters(const ChainSettings &chainSettings)
+{
+    auto lowPassCoefficients = juce::dsp::FilterDesign<float>::designIIRLowpassHighOrderButterworthMethod(chainSettings.lowPassFreq,
+                                                                                                          getSampleRate(),
+                                                                                                          2 * (chainSettings.lowPassSlope + 1));
+    
+    auto& leftLowPass = leftChain.get<ChainPositions::LowPass>();
+    auto& rightLowPass = rightChain.get<ChainPositions::LowPass>();
+    
+    updatePassFilter(leftLowPass, lowPassCoefficients, chainSettings.lowPassSlope);
+    updatePassFilter(rightLowPass, lowPassCoefficients, chainSettings.lowPassSlope);
+}
+
+void JhanEQAudioProcessor::updateFilters()
+{
+    auto chainSettings = getChainSettings(apvts);
+    
+    updateHighPassFilters(chainSettings);
+    updatePeakFilter(chainSettings);
+    updateLowPassFilters(chainSettings);
 }
 
 
