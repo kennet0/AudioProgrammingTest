@@ -39,13 +39,24 @@ private:
     JhanEQAudioProcessor& audioProcessor;
     
     CustomRotarySlider peakFreqSlider,
-    peakGainSlider,
-    peakQualitySlider,
-    highPassFreqSlider,
-    lowPassFreqSiler,
-    highPassSlopeSlider,
-    lowPassSlopeSlider;
+                        peakGainSlider,
+                        peakQualitySlider,
+                        highPassFreqSlider,
+                        lowPassFreqSiler,
+                        highPassSlopeSlider,
+                        lowPassSlopeSlider;
     
+    using APVTS = juce::AudioProcessorValueTreeState;
+    using Attachment = APVTS::SliderAttachment;
+    
+    Attachment peakFreqSliderAttachment,
+                peakGainSliderAttachment,
+                peakQualitySliderAttachment,
+                highPassFreqSliderAttachment,
+                lowPassFreqSilerAttachment,
+                highPassSlopeSliderAttachment,
+                lowPassSlopeSliderAttachment;
+            
     
     std::vector<juce::Component*> getComps();
 

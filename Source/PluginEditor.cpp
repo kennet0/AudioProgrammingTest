@@ -11,7 +11,14 @@
 
 //==============================================================================
 JhanEQAudioProcessorEditor::JhanEQAudioProcessorEditor (JhanEQAudioProcessor& p)
-    : AudioProcessorEditor (&p), audioProcessor (p)
+    : AudioProcessorEditor (&p), audioProcessor (p),
+peakFreqSliderAttachment(audioProcessor.apvts, "Peak Freq", peakFreqSlider),
+peakGainSliderAttachment(audioProcessor.apvts, "Peak Gain", peakGainSlider),
+peakQualitySliderAttachment(audioProcessor.apvts, "Peak Quality", peakQualitySlider),
+highPassFreqSliderAttachment(audioProcessor.apvts, "HighPass Freq", highPassFreqSlider),
+lowPassFreqSilerAttachment(audioProcessor.apvts, "LowPass Freq", lowPassFreqSiler),
+highPassSlopeSliderAttachment(audioProcessor.apvts, "HighPass Slope", highPassSlopeSlider),
+lowPassSlopeSliderAttachment(audioProcessor.apvts, "LowPass Slope", lowPassSlopeSlider)
 {
     // Make sure that before the constructor has finished, you've set the
     // editor's size to whatever you need it to be.
@@ -52,20 +59,13 @@ void JhanEQAudioProcessorEditor::resized()
     highPassFreqSlider.setBounds(highPassArea.removeFromTop(highPassArea.getHeight() * 0.5));
     highPassSlopeSlider.setBounds(highPassArea);
     
-    
     lowPassFreqSiler.setBounds(lowPassArea.removeFromTop(lowPassArea.getHeight() * 0.5));
     lowPassSlopeSlider.setBounds(lowPassArea);
                                
-                
-    
     peakFreqSlider.setBounds(bounds.removeFromTop(bounds.getHeight() * 0.33));
     peakGainSlider.setBounds(bounds.removeFromTop(bounds.getHeight() * 0.5));
     peakQualitySlider.setBounds(bounds);
-    
-    
-    
-    
-    
+     
 }
 
 std::vector<juce::Component*> JhanEQAudioProcessorEditor::getComps()
