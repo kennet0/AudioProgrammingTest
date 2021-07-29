@@ -38,12 +38,16 @@ JhanEQAudioProcessorEditor::~JhanEQAudioProcessorEditor()
 //==============================================================================
 void JhanEQAudioProcessorEditor::paint (juce::Graphics& g)
 {
+    
+    using namespace juce;
     // (Our component is opaque, so we must completely fill the background with a solid colour)
-    g.fillAll (getLookAndFeel().findColour (juce::ResizableWindow::backgroundColourId));
+    g.fillAll (Colours::black);
+    
+    //1:42:16
+    
 
-    g.setColour (juce::Colours::white);
-    g.setFont (15.0f);
-    g.drawFittedText ("Hello World!", getLocalBounds(), juce::Justification::centred, 1);
+
+    
 }
 
 void JhanEQAudioProcessorEditor::resized()
