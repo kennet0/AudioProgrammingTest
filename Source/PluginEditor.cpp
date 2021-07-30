@@ -43,9 +43,26 @@ void JhanEQAudioProcessorEditor::paint (juce::Graphics& g)
     // (Our component is opaque, so we must completely fill the background with a solid colour)
     g.fillAll (Colours::black);
     
-    //1:42:16
+    auto bounds = getLocalBounds();
+    auto responseArea = bounds.removeFromTop(bounds.getHeight() * 0.33);
     
-
+    auto w = responseArea.getWidth();
+    
+    auto& highPass = monoChain.get<ChainPositions::HighPass>();
+    auto& peak = monoChain.get<ChainPositions::Peak>();
+    auto& lowPass = monoChain.get<ChainPositions::LowPass>();
+    
+    auto sampleRate = audioProcessor.getSampleRate();
+    
+    std::vector<double> mags;
+    
+    mags.resize(w);
+    
+    for ( int i = 0; i < w; ++i) {
+        
+        double mag = 1.f;
+        
+    }
 
     
 }
@@ -55,7 +72,7 @@ void JhanEQAudioProcessorEditor::resized()
     // This is generally where you'll want to lay out the positions of any
     // subcomponents in your editor..
     auto bounds = getLocalBounds();
-    auto responseArea = bounds.removeFromTop(bounds.getHeight() * 0.33);
+    
     
     auto highPassArea = bounds.removeFromLeft(bounds.getWidth() * 0.33);
     auto lowPassArea = bounds.removeFromRight(bounds.getWidth() * 0.5);
