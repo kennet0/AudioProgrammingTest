@@ -88,6 +88,8 @@ void JhanEQAudioProcessorEditor::paint (juce::Graphics& g)
         
     }
     
+    // responseCurve
+    
     Path responseCurve;
     
     const double outputMin = responseArea.getBottom();
@@ -104,6 +106,8 @@ void JhanEQAudioProcessorEditor::paint (juce::Graphics& g)
         responseCurve.lineTo(responseArea.getX() + i, map(mags[i]));
     }
     
+    //set to image
+    
     g.setColour(Colours::orange);
     g.drawRoundedRectangle(responseArea.toFloat(), 4.f, 1.f);
     
@@ -119,7 +123,7 @@ void JhanEQAudioProcessorEditor::resized()
     // This is generally where you'll want to lay out the positions of any
     // subcomponents in your editor..
     auto bounds = getLocalBounds();
-
+    auto responseArea = bounds.removeFromTop(bounds.getHeight() * 0.33);
     auto highPassArea = bounds.removeFromLeft(bounds.getWidth() * 0.33);
     auto lowPassArea = bounds.removeFromRight(bounds.getWidth() * 0.5);
 
@@ -134,6 +138,24 @@ void JhanEQAudioProcessorEditor::resized()
     peakQualitySlider.setBounds(bounds);
      
 }
+
+void JhanEQAudioProcessorEditor::parameterValueChanged(int parameterIndex, float newValue)
+{
+    parametersChanged.set(true);
+}
+
+void JhanEQAudioProcessorEditor::timerCallback()
+{
+    if( parametersChanged.compareAndSetBool(false, true) )
+    {
+        //update the monochain
+        //signal a repaint
+        
+        
+    }
+}
+
+
 
 std::vector<juce::Component*> JhanEQAudioProcessorEditor::getComps()
 {
