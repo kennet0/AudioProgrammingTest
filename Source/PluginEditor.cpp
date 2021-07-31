@@ -164,8 +164,14 @@ void JhanEQAudioProcessorEditor::timerCallback()
         DBG("params changed: ");
         //update the monochain
         auto chainSettings = getChainSettings(audioProcessor.apvts);
+        
         auto peakCoefficients = makePeakFilter(chainSettings, audioProcessor.getSampleRate());
         updateCoefficients(monoChain.get<ChainPositions::Peak>().coefficients, peakCoefficients);
+        
+        auto highPassCoefficients = makeHighPassFilter(chainSettings, audioProcessor.getSampleRate());
+        auto lowPassCoefficients = makeLowPassFilter(chainSettings, audioProcessor.getSampleRate());
+        updatePassFilter(monoChain.get<ChainPositions::HighPass>(), highPassCoefficients, chainSettings.highPassSlope);
+        updatePassFilter(monoChain.get<ChainPositions::LowPass>(), lowPassCoefficients, chainSettings.lowPassSlope);
         
         //signal a repaint
         repaint();
