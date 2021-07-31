@@ -9,37 +9,18 @@
 #include "PluginProcessor.h"
 #include "PluginEditor.h"
 
-//==============================================================================
-JhanEQAudioProcessorEditor::JhanEQAudioProcessorEditor (JhanEQAudioProcessor& p)
-    : AudioProcessorEditor (&p), audioProcessor (p),
-peakFreqSliderAttachment(audioProcessor.apvts, "Peak Freq", peakFreqSlider),
-peakGainSliderAttachment(audioProcessor.apvts, "Peak Gain", peakGainSlider),
-peakQualitySliderAttachment(audioProcessor.apvts, "Peak Quality", peakQualitySlider),
-highPassFreqSliderAttachment(audioProcessor.apvts, "HighPass Freq", highPassFreqSlider),
-lowPassFreqSilerAttachment(audioProcessor.apvts, "LowPass Freq", lowPassFreqSiler),
-highPassSlopeSliderAttachment(audioProcessor.apvts, "HighPass Slope", highPassSlopeSlider),
-lowPassSlopeSliderAttachment(audioProcessor.apvts, "LowPass Slope", lowPassSlopeSlider)
+ResponseCurveComponent::ResponseCurveComponent(JhanEQAudioProcessor& p) : audioProcessor(p)
 {
-    // Make sure that before the constructor has finished, you've set the
-    // editor's size to whatever you need it to be.
-    
-    for( auto* comp : getComps() )
-    {
-        addAndMakeVisible(comp);
-    }
-    
     const auto& params = audioProcessor.getParameters();
-    for( auto param : params)
-    {
-        param->addListener(this);
-    }
-    
-    startTimerHz(60);
-    
-    setSize (600, 400);
+       for( auto param : params)
+       {
+           param->addListener(this);
+       }
+       
+       startTimerHz(60);
 }
 
-JhanEQAudioProcessorEditor::~JhanEQAudioProcessorEditor()
+ResponseCurveComponent::~ResponseCurveComponent()
 {
     const auto& params = audioProcessor.getParameters();
     for( auto param : params)
@@ -48,16 +29,40 @@ JhanEQAudioProcessorEditor::~JhanEQAudioProcessorEditor()
     }
 }
 
-//==============================================================================
-void JhanEQAudioProcessorEditor::paint (juce::Graphics& g)
+void ResponseCurveComponent::parameterValueChanged(int parameterIndex, float newValue)
+{
+    parametersChanged.set(true);
+}
+
+void ResponseCurveComponent::timerCallback()
+{
+    if( parametersChanged.compareAndSetBool(false, true) )
+    {
+        DBG("params changed: ");
+        //update the monochain
+        auto chainSettings = getChainSettings(audioProcessor.apvts);
+        
+        auto peakCoefficients = makePeakFilter(chainSettings, audioProcessor.getSampleRate());
+        updateCoefficients(monoChain.get<ChainPositions::Peak>().coefficients, peakCoefficients);
+        
+        auto highPassCoefficients = makeHighPassFilter(chainSettings, audioProcessor.getSampleRate());
+        auto lowPassCoefficients = makeLowPassFilter(chainSettings, audioProcessor.getSampleRate());
+        updatePassFilter(monoChain.get<ChainPositions::HighPass>(), highPassCoefficients, chainSettings.highPassSlope);
+        updatePassFilter(monoChain.get<ChainPositions::LowPass>(), lowPassCoefficients, chainSettings.lowPassSlope);
+        
+        //signal a repaint
+        repaint();
+    }
+}
+
+void ResponseCurveComponent::paint (juce::Graphics& g)
 {
     
     using namespace juce;
     // (Our component is opaque, so we must completely fill the background with a solid colour)
     g.fillAll (Colours::black);
     
-    auto bounds = getLocalBounds();
-    auto responseArea = bounds.removeFromTop(bounds.getHeight() * 0.33);
+    auto responseArea = getLocalBounds();
     
     auto w = responseArea.getWidth();
     
@@ -131,12 +136,55 @@ void JhanEQAudioProcessorEditor::paint (juce::Graphics& g)
     
 }
 
+//==============================================================================
+JhanEQAudioProcessorEditor::JhanEQAudioProcessorEditor (JhanEQAudioProcessor& p)
+    : AudioProcessorEditor (&p), audioProcessor (p),
+responseCurveComponent(audioProcessor),
+peakFreqSliderAttachment(audioProcessor.apvts, "Peak Freq", peakFreqSlider),
+peakGainSliderAttachment(audioProcessor.apvts, "Peak Gain", peakGainSlider),
+peakQualitySliderAttachment(audioProcessor.apvts, "Peak Quality", peakQualitySlider),
+highPassFreqSliderAttachment(audioProcessor.apvts, "HighPass Freq", highPassFreqSlider),
+lowPassFreqSilerAttachment(audioProcessor.apvts, "LowPass Freq", lowPassFreqSiler),
+highPassSlopeSliderAttachment(audioProcessor.apvts, "HighPass Slope", highPassSlopeSlider),
+lowPassSlopeSliderAttachment(audioProcessor.apvts, "LowPass Slope", lowPassSlopeSlider)
+
+{
+    // Make sure that before the constructor has finished, you've set the
+    // editor's size to whatever you need it to be.
+    
+    for( auto* comp : getComps() )
+    {
+        addAndMakeVisible(comp);
+    }
+
+    setSize (600, 400);
+}
+
+JhanEQAudioProcessorEditor::~JhanEQAudioProcessorEditor()
+{
+    
+}
+
+//==============================================================================
+void JhanEQAudioProcessorEditor::paint (juce::Graphics& g)
+{
+    
+    using namespace juce;
+    // (Our component is opaque, so we must completely fill the background with a solid colour)
+    g.fillAll (Colours::black);
+    
+    
+}
+
 void JhanEQAudioProcessorEditor::resized()
 {
     // This is generally where you'll want to lay out the positions of any
     // subcomponents in your editor..
     auto bounds = getLocalBounds();
     auto responseArea = bounds.removeFromTop(bounds.getHeight() * 0.33);
+    
+    responseCurveComponent.setBounds(responseArea);
+    
     auto highPassArea = bounds.removeFromLeft(bounds.getWidth() * 0.33);
     auto lowPassArea = bounds.removeFromRight(bounds.getWidth() * 0.5);
 
@@ -152,35 +200,6 @@ void JhanEQAudioProcessorEditor::resized()
      
 }
 
-void JhanEQAudioProcessorEditor::parameterValueChanged(int parameterIndex, float newValue)
-{
-    parametersChanged.set(true);
-}
-
-void JhanEQAudioProcessorEditor::timerCallback()
-{
-    if( parametersChanged.compareAndSetBool(false, true) )
-    {
-        DBG("params changed: ");
-        //update the monochain
-        auto chainSettings = getChainSettings(audioProcessor.apvts);
-        
-        auto peakCoefficients = makePeakFilter(chainSettings, audioProcessor.getSampleRate());
-        updateCoefficients(monoChain.get<ChainPositions::Peak>().coefficients, peakCoefficients);
-        
-        auto highPassCoefficients = makeHighPassFilter(chainSettings, audioProcessor.getSampleRate());
-        auto lowPassCoefficients = makeLowPassFilter(chainSettings, audioProcessor.getSampleRate());
-        updatePassFilter(monoChain.get<ChainPositions::HighPass>(), highPassCoefficients, chainSettings.highPassSlope);
-        updatePassFilter(monoChain.get<ChainPositions::LowPass>(), lowPassCoefficients, chainSettings.lowPassSlope);
-        
-        //signal a repaint
-        repaint();
-        
-        
-    }
-}
-
-
 
 std::vector<juce::Component*> JhanEQAudioProcessorEditor::getComps()
 {
@@ -192,7 +211,8 @@ std::vector<juce::Component*> JhanEQAudioProcessorEditor::getComps()
         &highPassFreqSlider,
         &lowPassFreqSiler,
         &highPassSlopeSlider,
-        &lowPassSlopeSlider
+        &lowPassSlopeSlider,
+        &responseCurveComponent
         
     };
 }
