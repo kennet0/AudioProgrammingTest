@@ -249,9 +249,7 @@ void updateCoefficients(Coefficients &old, const Coefficients &replacements)
 
 void JhanEQAudioProcessor::updateHighPassFilters(const ChainSettings &chainSettings)
 {
-    auto highPassCoefficients =  juce::dsp::FilterDesign<float>::designIIRHighpassHighOrderButterworthMethod(chainSettings.highPassFreq,
-                                                                                                           getSampleRate(),
-                                                                                                           2 * (chainSettings.highPassSlope + 1));
+    auto highPassCoefficients = makeHighPassFilter(chainSettings, getSampleRate());
        
        auto& leftHighPass = leftChain.get<ChainPositions::HighPass>();
        auto& rightHighPass = rightChain.get<ChainPositions::HighPass>();
@@ -262,9 +260,7 @@ void JhanEQAudioProcessor::updateHighPassFilters(const ChainSettings &chainSetti
 
 void JhanEQAudioProcessor::updateLowPassFilters(const ChainSettings &chainSettings)
 {
-    auto lowPassCoefficients = juce::dsp::FilterDesign<float>::designIIRLowpassHighOrderButterworthMethod(chainSettings.lowPassFreq,
-                                                                                                          getSampleRate(),
-                                                                                                          2 * (chainSettings.lowPassSlope + 1));
+    auto lowPassCoefficients = makeLowPassFilter(chainSettings, getSampleRate());
     
     auto& leftLowPass = leftChain.get<ChainPositions::LowPass>();
     auto& rightLowPass = rightChain.get<ChainPositions::LowPass>();
