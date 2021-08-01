@@ -139,6 +139,14 @@ void ResponseCurveComponent::paint (juce::Graphics& g)
 //==============================================================================
 JhanEQAudioProcessorEditor::JhanEQAudioProcessorEditor (JhanEQAudioProcessor& p)
     : AudioProcessorEditor (&p), audioProcessor (p),
+peakFreqSlider(*audioProcessor.apvts.getParameter("Peak Freq"), "Hz"),
+peakGainSlider(*audioProcessor.apvts.getParameter("Peak Gain"), "dB"),
+peakQualitySlider(*audioProcessor.apvts.getParameter("Peak Quality"), ""),
+highPassFreqSlider(*audioProcessor.apvts.getParameter("HighPass Freq"), "Hz"),
+lowPassFreqSiler(*audioProcessor.apvts.getParameter("LowPass Freq"), "Hz"),
+highPassSlopeSlider(*audioProcessor.apvts.getParameter("HighPass Slope"), "db/Oct"),
+lowPassSlopeSlider(*audioProcessor.apvts.getParameter("LowPass Slope"), "db/Oct"),
+
 responseCurveComponent(audioProcessor),
 peakFreqSliderAttachment(audioProcessor.apvts, "Peak Freq", peakFreqSlider),
 peakGainSliderAttachment(audioProcessor.apvts, "Peak Gain", peakGainSlider),
