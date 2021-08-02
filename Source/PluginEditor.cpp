@@ -138,12 +138,21 @@ void ResponseCurveComponent::paint (juce::Graphics& g)
 //==============================================================================
 JhanEQAudioProcessorEditor::JhanEQAudioProcessorEditor (JhanEQAudioProcessor& p)
     : AudioProcessorEditor (&p), audioProcessor (p),
+
+peakFreqSlider(*audioProcessor.apvts.getParameter("Peak Freq"), "Hz"),
+peakGainSlider(*audioProcessor.apvts.getParameter("Peak Gain"), "dB"),
+peakQualitySlider(*audioProcessor.apvts.getParameter("Peak Quality"), ""),
+highPassFreqSlider(*audioProcessor.apvts.getParameter("HighPass Freq"), "Hz"),
+lowPassFreqSlider(*audioProcessor.apvts.getParameter("LowPass Freq"), "Hz"),
+highPassSlopeSlider(*audioProcessor.apvts.getParameter("HighPass Slope"), "dB/Oct"),
+lowPassSlopeSlider(*audioProcessor.apvts.getParameter("LowPass Slope"), "dB/Oct"),
+
 responseCurveComponent(audioProcessor),
 peakFreqSliderAttachment(audioProcessor.apvts, "Peak Freq", peakFreqSlider),
 peakGainSliderAttachment(audioProcessor.apvts, "Peak Gain", peakGainSlider),
 peakQualitySliderAttachment(audioProcessor.apvts, "Peak Quality", peakQualitySlider),
 highPassFreqSliderAttachment(audioProcessor.apvts, "HighPass Freq", highPassFreqSlider),
-lowPassFreqSilerAttachment(audioProcessor.apvts, "LowPass Freq", lowPassFreqSiler),
+lowPassFreqSliderAttachment(audioProcessor.apvts, "LowPass Freq", lowPassFreqSlider),
 highPassSlopeSliderAttachment(audioProcessor.apvts, "HighPass Slope", highPassSlopeSlider),
 lowPassSlopeSliderAttachment(audioProcessor.apvts, "LowPass Slope", lowPassSlopeSlider)
 
@@ -190,7 +199,7 @@ void JhanEQAudioProcessorEditor::resized()
     highPassFreqSlider.setBounds(highPassArea.removeFromTop(highPassArea.getHeight() * 0.5));
     highPassSlopeSlider.setBounds(highPassArea);
 
-    lowPassFreqSiler.setBounds(lowPassArea.removeFromTop(lowPassArea.getHeight() * 0.5));
+    lowPassFreqSlider.setBounds(lowPassArea.removeFromTop(lowPassArea.getHeight() * 0.5));
     lowPassSlopeSlider.setBounds(lowPassArea);
 
     peakFreqSlider.setBounds(bounds.removeFromTop(bounds.getHeight() * 0.33));
@@ -208,7 +217,7 @@ std::vector<juce::Component*> JhanEQAudioProcessorEditor::getComps()
         &peakGainSlider,
         &peakQualitySlider,
         &highPassFreqSlider,
-        &lowPassFreqSiler,
+        &lowPassFreqSlider,
         &highPassSlopeSlider,
         &lowPassSlopeSlider,
         &responseCurveComponent
