@@ -16,7 +16,6 @@ ResponseCurveComponent::ResponseCurveComponent(JhanEQAudioProcessor& p) : audioP
        {
            param->addListener(this);
        }
-       
        startTimerHz(60);
 }
 
