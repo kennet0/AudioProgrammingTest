@@ -132,6 +132,7 @@ void JhanEQAudioProcessorEditor::paint (juce::Graphics& g)
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 //==============================================================================
 JhanEQAudioProcessorEditor::JhanEQAudioProcessorEditor (JhanEQAudioProcessor& p)
     : AudioProcessorEditor (&p), audioProcessor (p),
@@ -180,6 +181,8 @@ void JhanEQAudioProcessorEditor::paint (juce::Graphics& g)
     
 }
 
+=======
+>>>>>>> parent of a3878a0 (Created ResponseCurveComponent)
 =======
 >>>>>>> parent of a3878a0 (Created ResponseCurveComponent)
 void JhanEQAudioProcessorEditor::resized()
