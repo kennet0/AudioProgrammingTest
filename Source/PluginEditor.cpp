@@ -349,17 +349,11 @@ void ResponseCurveComponent::resized()
         xs.add(left + width * normX);
     }
     
-    
-    
     g.setColour(Colours::dimgrey);
-//    for( auto f : freqs)
+
     for( auto x : xs)
     {
-//        auto normX = mapFromLog10(f, 20.f, 20000.f);
-        
-//        g.drawVerticalLine(getWidth() * normX, 0.f, getHeight());
         g.drawVerticalLine(x, top, bottom);
-        
     }
     
     Array<float> gain
@@ -370,7 +364,6 @@ void ResponseCurveComponent::resized()
     for( auto gDb : gain)
     {
         auto y = jmap(gDb, -24.f,  24.f, float(bottom), float(top));
-//        g.drawHorizontalLine(y, 0, getWidth());
         g.setColour(gDb == 0.f ? Colour(137u, 203u, 178u) : Colours::darkgrey );
         g.drawHorizontalLine(y, left, right);
         
@@ -410,6 +403,7 @@ void ResponseCurveComponent::resized()
         g.drawFittedText(str, r, juce::Justification::centred, 1);
     }
     
+    //gain dB Text
     for( auto gDb : gain)
     {
         auto y = jmap(gDb, -24.f,  24.f, float(bottom), float(top));
@@ -429,6 +423,17 @@ void ResponseCurveComponent::resized()
         g.setColour(gDb == 0.f ? Colour(137u, 203u, 178u) : Colours::lightgrey );
         
         g.drawFittedText(str, r, juce::Justification::centred, 1);
+        
+        
+        //slope Text
+        str.clear();
+        str << (gDb - 24.f);
+        
+        r.setX(1);
+        textWidth = g.getCurrentFont().getStringWidth(str);
+        r.setSize(textWidth, fontHeight);
+        g.setColour(Colours::lightgrey);
+        g.drawFittedText(str, r, juce::Justification::centred, 1);
     }
 }
 
@@ -436,9 +441,6 @@ juce::Rectangle<int> ResponseCurveComponent::getRenderArea()
 {
     auto bounds = getLocalBounds();
        
-//       bounds.reduce(10,//JUCE_LIVE_CONSTANT(5),
-//                     8//JUCE_LIVE_CONSTANT(5));
-//                     );
     bounds.removeFromTop(12);
     bounds.removeFromBottom(2);
     bounds.removeFromLeft(20);
