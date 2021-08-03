@@ -65,9 +65,9 @@
           uiLastY_Normal="576" uiopen_Normal="1">
     <PLUGIN name="JhanEQ" format="VST3" category="Fx" manufacturer="HanStudio"
             version="1.0.0" file="/Users/janghan/Library/Audio/Plug-Ins/VST3/JhanEQ.vst3"
-            uid="acf777e1" isInstrument="0" fileTime="17af248d2f9" infoUpdateTime="17af289d6ef"
+            uid="acf777e1" isInstrument="0" fileTime="17af248d2f9" infoUpdateTime="17b0b4162a3"
             numInputs="2" numOutputs="2" isShell="0"/>
-    <STATE>628.VMjLgrl....O+fWarAhckI2bo8la8HRLt.iHfTlai8FYo41Y8HRUTYTK3HxO9.BOVMEUy.Ea0cVZtMEcgQWY9vSRC8Vav8lak4Fc9LCN23BTEwlXmAiUYoWUrIVdA4hKAIlKTETRUAUSAAkKBolQY4BQ1MTQlQkVsclQTcVSxHlYXolXqUzQtDSQFEFLUYjKAolKA4hKt3hKt3BRzEDQt.UQpQUPvPjKAgDTZoVPP4BTT4hTuMlQZAUQwHVdAgGUxgiQhsVPlM1Y2Y0XqEDTtjDTt3hKt3hKt3hKt3hKtPUPIUETMEDTtHjZFkkKDY1PEYmdgISPUgUdMcDRFkzUYcWPlM1Y2Y0XqEDTtjDTt3hKt3hKtX1L54RPtPUPIUETMEDTtHjZFkkKDY2PEYmdgISPUgUdMcDRScWLgYWUF4RLEYTXvTkQtDjZtDjKt3hKt3hKtfjKD4BTEoFUAACQtDDRPokZAAkKKQkKTsVQwnkYXolXqUzQtDSQFEFLUYjKAolKA4hKt3hKt3BcxHDQt.UQpQUPvPjKAgDTZoVPP4xRT4BUqUTLZYlXTg0azXjKwTjQgASUF4RPp4RPt3hKt3hKt3hKt3hKPUjZTEDLD4RPHAkVpEDTt3DUtP0ZEEiVlQTUic1cVokdqcjKwTjQgASUF4RPp4RPt3hKt3hKt3hcqLjKt3hKt3hKt3hKtXlTU0DUQAURWoULEYzXqEEUXoWQF4RPDYFTzDzUXkWSG4RPDYmKtnWPt3hKt3hKt3hKJUELPUTPqI1aYcEV5UkQQcVTWgEOujzPu0Fbu4VYtQmO77hUSQ0LPwVcmklaSQWXzUlO..</STATE>
+    <STATE>628.VMjLgrl....O+fWarAhckI2bo8la8HRLt.iHfTlai8FYo41Y8HRUTYTK3HxO9.BOVMEUy.Ea0cVZtMEcgQWY9vSRC8Vav8lak4Fc9LCN23BTEwlXmAiUYoWUrIVdA4hKAIlKTETRUAUSAAkKBolQY4BQ1MTQlQkVsclQTcVSxHlYXolXqUzQtDSQFEFLUYjKAolKA4hKt3hKt3BRzEDQt.UQpQUPvPjKAgDTZoVPP4BTT4hTuMlQZAUQwHVdAgGUxgiQhsVPlM1Y2Y0XqEDTtjDTt3hKt3hKt3hKt3hKtPUPIUETMEDTtHjZFkkKDY1PEYmdgISPUgUdMcDRFkzUYcWPlM1Y2Y0XqEDTtjDTt3hKt3hKtn1cz4RPtPUPIUETMEDTtHjZFkkKDY2PEYmdgISPUgUdMcDRScWLgYWUF4RLEYTXvTkQtDjZtDjKt3hKt3hKtfjKD4BTEoFUAACQtDDRPokZAAkKKQkKTsVQwnkYXolXqUzQtDSQFEFLUYjKAolKA4hKt3hKt3hX3EDQt.UQpQUPvPjKAgDTZoVPP4xRT4BUqUTLZYlXTg0azXjKwTjQgASUF4RPp4RPt3hKt3hKt3BatPjKPUjZTEDLD4RPHAkVpEDTt3DUtP0ZEEiVlQTUic1cVokdqcjKwTjQgASUF4RPp4RPt3hKt3hKt3hcqLjKt3hKt3hKt3hKtXlTU0DUQAURWoULEYzXqEEUXoWQF4RPDYFTzDzUXkWSG4RPDYmKtnWPt3hKt3hKt3hKJUELPUTPqI1aYcEV5UkQQcVTWgEOujzPu0Fbu4VYtQmO77hUSQ0LPwVcmklaSQWXzUlO..</STATE>
     <LAYOUT>
       <INPUTS>
         <BUS index="0" layout="L R"/>
@@ -81,7 +81,7 @@
           uiLastY_Normal="446" uiopen_Normal="1">
     <PLUGIN name="AUAudioFilePlayer" format="AudioUnit" category="Generator"
             manufacturer="Apple" version="1.6.0" file="AudioUnit:Generators/augn,afpl,appl"
-            uid="6163676e" isInstrument="0" fileTime="0" infoUpdateTime="17af289d6ef"
+            uid="6163676e" isInstrument="0" fileTime="0" infoUpdateTime="17b0b4162a3"
             numInputs="0" numOutputs="2" isShell="0"/>
     <STATE>584.hAGaoMGcv.C1AHv.DTfAGfPBJr.Gc3wGgvUag4VclE1XzUmbkIGUjEFcg8EDarVPUAkbkMWYzAUYxMWZyQWYtQ2TzEFcksTY4c0b0IFc4AWYWYWYxMWZu4FUzkGbk8EDOXVZrUVKxUlYkIWYtMVYyQkag0VYRDFbvwFPgxvzM3vCPDQFXYTZrUlSg0VYWIUYmk1atMmWIM2TkwVYiQWYjYTZrU1WPn0KUMWYxM2KpElamgVXt8BQucmar8VXjM2K4ISagQWYtL1asARKfPEZkAxRoQFHLEjTOkDHJU2bzklafHTZkIVYxABHSQWX4AxSlYVZikVXrAhUoQVYu4RavMSnRP8DTTgEWfQFZ3kTkcVZu4FQuU1bL81avokTkcVZu4FQgQWXeAADIM2TkwVYiQWYjIUYmk1atokTkcVZu4lSg0VYH7DDvA..........fOy3vx+e...XOqn...F...FfkI..fA..fOy3vx+e...XOqn...F..Dva1YG.....A................................................................5pZ......PBZ4TY2AhTkcVZu4VBRDlYvwFD.HQX0claQCBDVYTZrUFHwfUUtQWZzwVYjA.B.jA.l.vJ.jD.QAPV.3E.vAPc.nG.6APe.PH.MBPk.PZ.ADv.AvP.aDfIAjS.DEPQAfa.4F.wATb.JG.yADc.TGv1........BD..........h...................APN</STATE>
     <LAYOUT>

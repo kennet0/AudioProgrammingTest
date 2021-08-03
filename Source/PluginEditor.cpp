@@ -120,11 +120,11 @@ void RotarySliderWithLabels::paint(juce::Graphics &g)
     
     auto sliderBounds = getSliderBounds();
     
-    //Square bounds
-    g.setColour(Colours::red);
-    g.drawRect(getLocalBounds());
-    g.setColour(Colours::yellow);
-    g.drawRect(sliderBounds);
+    //Square boundind boxes
+//    g.setColour(Colours::red);
+//    g.drawRect(getLocalBounds());
+//    g.setColour(Colours::yellow);
+//    g.drawRect(sliderBounds);
     
     getLookAndFeel().drawRotarySlider(g,
                                       sliderBounds.getX(),
@@ -192,7 +192,10 @@ ResponseCurveComponent::ResponseCurveComponent(JhanEQAudioProcessor& p) : audioP
        {
            param->addListener(this);
        }
-       startTimerHz(60);
+    
+    updateChain();
+    
+    startTimerHz(60);
 }
 
 ResponseCurveComponent::~ResponseCurveComponent()
@@ -215,19 +218,24 @@ void ResponseCurveComponent::timerCallback()
     {
         DBG("params changed: ");
         //update the monochain
-        auto chainSettings = getChainSettings(audioProcessor.apvts);
-        
-        auto peakCoefficients = makePeakFilter(chainSettings, audioProcessor.getSampleRate());
-        updateCoefficients(monoChain.get<ChainPositions::Peak>().coefficients, peakCoefficients);
-        
-        auto highPassCoefficients = makeHighPassFilter(chainSettings, audioProcessor.getSampleRate());
-        auto lowPassCoefficients = makeLowPassFilter(chainSettings, audioProcessor.getSampleRate());
-        updatePassFilter(monoChain.get<ChainPositions::HighPass>(), highPassCoefficients, chainSettings.highPassSlope);
-        updatePassFilter(monoChain.get<ChainPositions::LowPass>(), lowPassCoefficients, chainSettings.lowPassSlope);
-        
+        updateChain();
         //signal a repaint
         repaint();
     }
+}
+
+void ResponseCurveComponent::updateChain()
+{
+    auto chainSettings = getChainSettings(audioProcessor.apvts);
+    
+    auto peakCoefficients = makePeakFilter(chainSettings, audioProcessor.getSampleRate());
+    updateCoefficients(monoChain.get<ChainPositions::Peak>().coefficients, peakCoefficients);
+    
+    auto highPassCoefficients = makeHighPassFilter(chainSettings, audioProcessor.getSampleRate());
+    auto lowPassCoefficients = makeLowPassFilter(chainSettings, audioProcessor.getSampleRate());
+    updatePassFilter(monoChain.get<ChainPositions::HighPass>(), highPassCoefficients, chainSettings.highPassSlope);
+    updatePassFilter(monoChain.get<ChainPositions::LowPass>(), lowPassCoefficients, chainSettings.lowPassSlope);
+    
 }
 
 void ResponseCurveComponent::paint (juce::Graphics& g)
@@ -339,12 +347,30 @@ lowPassSlopeSliderAttachment(audioProcessor.apvts, "LowPass Slope", lowPassSlope
     peakFreqSlider.labels.add({0.f, "20Hz"});
     peakFreqSlider.labels.add({1.f, "20kHz"});
     
+    peakGainSlider.labels.add({0.f,"-24dB"});
+    peakGainSlider.labels.add({1.f,"+24dB"});
+    
+    peakQualitySlider.labels.add({0.f, "0.1"});
+    peakQualitySlider.labels.add({1.f, "10.0"});
+    
+    highPassFreqSlider.labels.add({0.f, "20Hz"});
+    highPassFreqSlider.labels.add({1.f, "20kHz"});
+    
+    lowPassFreqSlider.labels.add({0.f, "20Hz"});
+    lowPassFreqSlider.labels.add({1.f, "20kHz"});
+    
+    highPassSlopeSlider.labels.add({0.f, "12"});
+    highPassSlopeSlider.labels.add({1.f, "24"});
+    
+    lowPassSlopeSlider.labels.add({0.f, "12"});
+    lowPassSlopeSlider.labels.add({1.f, "24"});
+    
     for( auto* comp : getComps() )
     {
         addAndMakeVisible(comp);
     }
 
-    setSize (600, 400);
+    setSize (600, 480);
 }
 
 JhanEQAudioProcessorEditor::~JhanEQAudioProcessorEditor()
@@ -368,13 +394,16 @@ void JhanEQAudioProcessorEditor::resized()
     // This is generally where you'll want to lay out the positions of any
     // subcomponents in your editor..
     auto bounds = getLocalBounds();
-    auto responseArea = bounds.removeFromTop(bounds.getHeight() * 0.33);
+    float hRatio = 25.f / 100.f;
+    auto responseArea = bounds.removeFromTop(bounds.getHeight() * hRatio);
     
     responseCurveComponent.setBounds(responseArea);
     
+    bounds.removeFromTop(5);
+    
     auto highPassArea = bounds.removeFromLeft(bounds.getWidth() * 0.33);
     auto lowPassArea = bounds.removeFromRight(bounds.getWidth() * 0.5);
-
+    
     highPassFreqSlider.setBounds(highPassArea.removeFromTop(highPassArea.getHeight() * 0.5));
     highPassSlopeSlider.setBounds(highPassArea);
 
