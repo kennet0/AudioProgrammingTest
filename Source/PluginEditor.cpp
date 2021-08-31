@@ -185,13 +185,18 @@ juce::Rectangle<int> RotarySliderWithLabels::getSliderBounds() const
 }
 
 //==========================================================================================
-ResponseCurveComponent::ResponseCurveComponent(JhanEQAudioProcessor& p) : audioProcessor(p)
+ResponseCurveComponent::ResponseCurveComponent(JhanEQAudioProcessor& p) :
+audioProcessor(p),
+leftChannelFifo(&audioProcessor.leftChannelFifo)
 {
     const auto& params = audioProcessor.getParameters();
        for( auto param : params)
        {
            param->addListener(this);
        }
+    
+    leftChannelFFTDataGenerator.changeOrder(FFTOrder::order2048);
+    monoBuffer.setSize(1, leftChannelFFTDataGenerator.getFFTSize());
     
     updateChain();
     
@@ -214,6 +219,33 @@ void ResponseCurveComponent::parameterValueChanged(int parameterIndex, float new
 
 void ResponseCurveComponent::timerCallback()
 {
+    
+    juce::AudioBuffer<float> tempIncomingBuffer;
+    
+    while( leftChannelFifo->getNumCompleteBuffersAvailable() > 0)
+    {
+        if( leftChannelFifo->getAudioBuffer(tempIncomingBuffer) )
+        {
+            auto size = tempIncomingBuffer.getNumSamples();
+            
+            juce::FloatVectorOperations::copy(monoBuffer.getWritePointer(0, 0),
+                                              monoBuffer.getReadPointer(0, size),
+                                              monoBuffer.getNumSamples() - size);
+            
+            juce::FloatVectorOperations::copy(monoBuffer.getWritePointer(0, monoBuffer.getNumSamples() - size),
+                                              tempIncomingBuffer.getReadPointer(0, 0),
+                                              size);
+            
+            leftChannelFFTDataGenerator.produceFFTDataForRendering(monoBuffer, -48.f);
+        }
+    }
+    
+    /*
+     if there are FFT data buffers to pull
+        if we can pull a buffer
+            generate a path
+     */
+    
     if( parametersChanged.compareAndSetBool(false, true) )
     {
         DBG("params changed: ");

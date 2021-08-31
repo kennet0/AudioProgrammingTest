@@ -107,6 +107,10 @@ void JhanEQAudioProcessor::prepareToPlay (double sampleRate, int samplesPerBlock
     rightChain.prepare(spec);
     
     updateFilters();
+    
+    leftChannelFifo.prepare(samplesPerBlock);
+    rightChannelFifo.prepare(samplesPerBlock);
+    
 }
 
 void JhanEQAudioProcessor::releaseResources()
@@ -169,6 +173,8 @@ void JhanEQAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer, juce:
     leftChain.process(leftContext);
     rightChain.process(rightContext);
     
+    leftChannelFifo.update(buffer);
+    rightChannelFifo.update(buffer);
     
 }
 
