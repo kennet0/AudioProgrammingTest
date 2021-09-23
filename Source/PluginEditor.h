@@ -248,6 +248,8 @@ private:
     
     AnalyzerPathGenerator<juce::Path> pathProducer;
     
+    juce::path leftChannelFFTPath;
+    
 };
 
 
